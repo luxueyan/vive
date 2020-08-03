@@ -2,7 +2,7 @@
   "name": "vive",
   "version": "1.0.0-rc.3",
   "license": "MIT",
-  "author": "Evan You",
+  "author": "xueyan.lu",
   "bin": {
     "vive": "bin/vive.js"
   },
@@ -76,20 +76,18 @@
     "mime-types": "^2.1.27",
     "minimist": "^1.2.5",
     "ora": "^4.0.4",
-    
+    "vite": "^1.0.0-rc.3"
   },
   "devDependencies": {
     "@babel/runtime": "7.10.2",
-    
+    "@types/fs-extra": "^9.0.1",
+    "@types/mime-types": "^2.1.0",
     "lint-staged": "^10.1.6",
     "lodash-es": "^4.17.15",
     "moment": "^2.26.0",
-    
     "prettier": "^2.0.4",
-    
     "source-map-support": "^0.5.19",
     "typescript": "^3.9.6",
-   
     "yorkie": "^2.0.0"
   }
 }

@@ -2,7 +2,7 @@ const start = Date.now()
 const argv = require('minimist')(process.argv.slice(2))
 // make sure to set debug flag before requiring anything
 if (argv.debug) {
-  process.env.DEBUG = `vive:` + (argv.debug === true ? '*' : argv.debug)
+  process.env.DEBUG = `vite:` + (argv.debug === true ? '*' : argv.debug)
   try {
     // this is only present during local development
     require('source-map-support').install()
@@ -12,7 +12,17 @@ if (argv.debug) {
 import os from 'os'
 import path from 'path'
 import chalk from 'chalk'
-import { UserConfig, resolveConfig } from './config'
+import getApis from './generator/api'
+console.log(getApis())
+// import { UserConfig, resolveConfig } from './config'
+import {
+  createServer,
+  UserConfig,
+  resolveConfig,
+  build,
+  ssrBuild,
+  optimizeDeps
+} from 'vite'
 
 const command = argv._[0]
 const defaultMode = command === 'build' ? 'production' : 'development'
@@ -48,7 +58,7 @@ Options:
 `)
 }
 
-console.log(chalk.cyan(`vive v${require('../../package.json').version}`))
+console.log(chalk.cyan(`vive v${require('../package.json').version}`))
 ;(async () => {
   const { help, h, mode, m, version, v } = argv
 
@@ -122,8 +132,7 @@ async function resolveOptions(mode: string) {
 }
 
 async function runServe(options: UserConfig) {
-  const server = require('./server').createServer(options)
-
+  const server = createServer(options)
   let port = options.port || 3000
   let hostname = options.hostname || 'localhost'
   const protocol = options.https ? 'https' : 'http'
@@ -136,7 +145,7 @@ async function runServe(options: UserConfig) {
         server.listen(++port)
       }, 100)
     } else {
-      console.error(chalk.red(`[vive] server error:`))
+      console.error(chalk.red(`[vite] server error:`))
       console.error(e)
     }
   })
@@ -162,7 +171,7 @@ async function runServe(options: UserConfig) {
         })
     })
     console.log()
-    require('debug')('vive:server')(`server ready in ${Date.now() - start}ms.`)
+    require('debug')('vite:server')(`server ready in ${Date.now() - start}ms.`)
 
     if (options.open) {
       require('./utils/openBrowser').openBrowser(
@@ -174,10 +183,10 @@ async function runServe(options: UserConfig) {
 
 async function runBuild(options: UserConfig) {
   try {
-    await require('./build')[options.ssr ? 'ssrBuild' : 'build'](options)
+    await (options.ssr ? ssrBuild : build)(options)
     process.exit(0)
   } catch (err) {
-    console.error(chalk.red(`[vive] Build errored out.`))
+    console.error(chalk.red(`[vite] Build errored out.`))
     console.error(err)
     process.exit(1)
   }
@@ -185,13 +194,10 @@ async function runBuild(options: UserConfig) {
 
 async function runOptimize(options: UserConfig) {
   try {
-    await require('./optimizer').optimizeDeps(
-      options,
-      true /* as cli command */
-    )
+    await optimizeDeps(options, true /* as cli command */)
     process.exit(0)
   } catch (err) {
-    console.error(chalk.red(`[vive] Dep optimization errored out.`))
+    console.error(chalk.red(`[vite] Dep optimization errored out.`))
     console.error(err)
     process.exit(1)
   }

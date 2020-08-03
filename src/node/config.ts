@@ -49,7 +49,7 @@ export interface SharedConfig {
    * (exact, no wildcard syntax), or request path -> fs directory mappings.
    * When using directory mappings, the key **must start and end with a slash**.
    *
-   * Example `vite.config.js`:
+   * Example `vive.config.js`:
    * ``` js
    * module.exports = {
    *   alias: {
@@ -82,7 +82,7 @@ export interface SharedConfig {
   /**
    * Configure dep optimization behavior.
    *
-   * Example `vite.config.js`:
+   * Example `vive.config.js`:
    * ``` js
    * module.exports = {
    *   optimizeDeps: {
@@ -147,7 +147,7 @@ export interface SharedConfig {
   enableEsbuild?: boolean
   /**
    * Environment variables parsed from .env files
-   * only ones starting with VITE_ are exposed on `import.meta.env`
+   * only ones starting with VIVE_ are exposed on `import.meta.env`
    * @internal
    */
   env?: DotenvParseOutput
@@ -169,7 +169,7 @@ export interface ServerConfig extends SharedConfig {
    * be a path Full options
    * [here](https://github.com/http-party/node-http-proxy#options).
    *
-   * Example `vite.config.js`:
+   * Example `vive.config.js`:
    * ``` js
    * module.exports = {
    *   proxy: {
@@ -329,7 +329,7 @@ export type ResolvedConfig = UserConfig & {
   __path?: string
 }
 
-const debug = require('debug')('vite:config')
+const debug = require('debug')('vive:config')
 
 export async function resolveConfig(
   mode: string,
@@ -343,11 +343,11 @@ export async function resolveConfig(
   if (configPath) {
     resolvedPath = path.resolve(cwd, configPath)
   } else {
-    const jsConfigPath = path.resolve(cwd, 'vite.config.js')
+    const jsConfigPath = path.resolve(cwd, 'vive.config.js')
     if (fs.existsSync(jsConfigPath)) {
       resolvedPath = jsConfigPath
     } else {
-      const tsConfigPath = path.resolve(cwd, 'vite.config.ts')
+      const tsConfigPath = path.resolve(cwd, 'vive.config.ts')
       if (fs.existsSync(tsConfigPath)) {
         isTS = true
         resolvedPath = tsConfigPath
@@ -427,7 +427,7 @@ export async function resolveConfig(
     return config
   } catch (e) {
     console.error(
-      chalk.red(`[vite] failed to load config from ${resolvedPath}:`)
+      chalk.red(`[vive] failed to load config from ${resolvedPath}:`)
     )
     console.error(e)
     process.exit(1)
@@ -575,8 +575,8 @@ function loadEnv(mode: string, root: string): Record<string, string> {
       }
       dotenvExpand(result)
       for (const key in result.parsed) {
-        // only keys that start with VITE_ are exposed.
-        if (key.startsWith(`VITE_`)) {
+        // only keys that start with VIVE_ are exposed.
+        if (key.startsWith(`VIVE_`)) {
           env[key] = result.parsed![key]
         }
       }
